@@ -1,0 +1,2 @@
+LOAN_ID #\(null\)|#%{SPACE}([0-9]{1,6})|#%{SPACE}|%{SPACE}
+LOGGER %{WORD}([\.\+]%{WORD})?*

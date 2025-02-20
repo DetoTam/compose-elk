@@ -1,68 +1,48 @@
 version: '3.8'
-
 services:
-  ansible:
-    image: python:3.10-slim
-    container_name: ansible
-    hostname: ansible
-    stdin_open: true
-    tty: true
-    volumes:
-      - ./ansible:/ansible  # Shared volume for interaction with Ansible
-    working_dir: /ansible
-    command: /bin/bash
-    networks:
-      - ansible_network
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "2222:22"
-    depends_on:
-      - semaphore
-
-  mysql:
-    restart: unless-stopped
-    image: mysql:8.0
-    container_name: mysql
-    hostname: mysql
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+    container_name: elasticsearch
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
     volumes:
-      - mysql_data:/semaphore_data
-    networks:
-      - ansible_network
-
-  semaphore:
-    restart: unless-stopped
+      - ./elasticsearch/config:/etc/elasticsearch
+      #- ./elasticsearch/data:/usr/share/elasticsearch/data
     ports:
-      - 3000:3000
-    image: semaphoreui/semaphore:latest
-    container_name: semaphore
-    environment:
-      SEMAPHORE_DB_USER: ${SEMAPHORE_DB_USER}
-      SEMAPHORE_DB_PASS: ${SEMAPHORE_DB_PASS}
-      SEMAPHORE_DB_HOST: mysql
-      SEMAPHORE_DB_PORT: 3306
-      SEMAPHORE_DB_DIALECT: mysql
-      SEMAPHORE_DB: ${MYSQL_DATABASE}
-      SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHORE_ADMIN_PASSWORD}
-      SEMAPHORE_ADMIN_NAME: ${SEMAPHORE_ADMIN_NAME}
-      SEMAPHORE_ADMIN_EMAIL: ${SEMAPHORE_ADMIN_EMAIL}
-    depends_on:
-      - mysql
-    volumes:
-      - ./ansible:/ansible  # Shared volume for interaction with Ansible
+      - "9200:9200"
+      - "9300:9300"
     networks:
-      - ansible_network
+      - elk
 
-volumes:
-  mysql_data:
-    driver: local
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.17.0
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./kibana/config:/etc/kibana/config
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.17.0
+    container_name: logstash
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./logstash/config:/etc/logstash
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./app-log:/usr/share/logstash/data/
+      - ./app-log/patterns:/usr/share/logstash/patterns/
+    ports:
+      - "5044:5044"
+    networks:
+      - elk
 
 networks:
-  ansible_network:
+  elk:
     driver: bridge

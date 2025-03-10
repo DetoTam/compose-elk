@@ -3,7 +3,6 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
     container_name: elasticsearch
-    user: "0" 
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
@@ -23,7 +22,6 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.0
     container_name: kibana
-    user: "0" 
     depends_on:
       - elasticsearch
     volumes:
@@ -39,7 +37,6 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:8.17.0
     container_name: logstash
-    user: "0" 
     depends_on:
       - elasticsearch
     volumes:

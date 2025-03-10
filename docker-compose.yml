@@ -9,7 +9,8 @@ services:
       - xpack.security.enabled=false
     volumes:
       - ./elasticsearch/config:/etc/elasticsearch
-      #- ./elasticsearch/data:/usr/share/elasticsearch/data
+      - ./elasticsearch/logs:/usr/share/elasticsearch/config/logs
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -23,6 +24,7 @@ services:
       - elasticsearch
     volumes:
       - ./kibana/config:/etc/kibana/config
+      - ./kibana/logs:/usr/share/kibana/config/logs
     ports:
       - "5601:5601"
     networks:
@@ -36,6 +38,7 @@ services:
     volumes:
       - ./logstash/config:/etc/logstash
       - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logs/logstash:/usr/share/logstash/config/logs
       - ./app-log:/usr/share/logstash/data/
       - ./app-log/patterns:/usr/share/logstash/patterns/
     ports:

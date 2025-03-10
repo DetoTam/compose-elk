@@ -1,7 +1,7 @@
 cluster.name: test-logs
 node.name: main
 path.data: /var/lib/elasticsearch
-path.logs: /var/log/elasticsearch
+path.logs: /usr/share/elasticsearch/config/logs
 network.host: 0.0.0.0
 http.port: 9200
 cluster.initial_master_nodes:

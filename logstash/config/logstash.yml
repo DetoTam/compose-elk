@@ -2,6 +2,6 @@ path.data: /var/lib/logstash
 pipeline.ordered: auto
 
 log.level: trace
-path.logs: /var/log/logstash
+path.logs: /usr/share/logstash/config/logs
 
 path.config: "/usr/share/logstash/pipeline/"

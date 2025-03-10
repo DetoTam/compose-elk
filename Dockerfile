@@ -1,7 +1,8 @@
+ARG ELK_VERSION
 # Используем официальные образы ELK стека
-FROM elasticsearch:8.12.1 as elasticsearch
-FROM kibana:8.12.1 as kibana
-FROM logstash:8.12.1 as logstash
+FROM elasticsearch:${ELK_VERSION} as elasticsearch
+FROM kibana:${ELK_VERSION} as kibana
+FROM logstash:${ELK_VERSION} as logstash
 
 RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*

@@ -11,6 +11,8 @@ services:
       - ./elasticsearch/config:/etc/elasticsearch
       - ./elasticsearch/logs:/usr/share/elasticsearch/config/logs
       - ./elasticsearch/data:/usr/share/elasticsearch/data
+    command: >
+      sh -c "chmod -R 777 /etc/elasticsearch /usr/share/elasticsearch/config/logs /usr/share/elasticsearch/data && /usr/local/bin/docker-entrypoint.sh"
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -25,6 +27,8 @@ services:
     volumes:
       - ./kibana/config:/etc/kibana/config
       - ./kibana/logs:/usr/share/kibana/config/logs
+    command: >
+      sh -c "chmod -R 777 /etc/kibana/config /usr/share/kibana/config/logs && /usr/local/bin/docker-entrypoint.sh"
     ports:
       - "5601:5601"
     networks:
@@ -41,6 +45,8 @@ services:
       - ./logs/logstash:/usr/share/logstash/config/logs
       - ./app-log:/usr/share/logstash/data/
       - ./app-log/patterns:/usr/share/logstash/patterns/
+    command: >
+      sh -c "chmod -R 777 /etc/logstash /usr/share/logstash/pipeline /usr/share/logstash/config/logs /usr/share/logstash/config/logs /usr/share/logstash/data/ && /usr/local/bin/docker-entrypoint.sh"
     ports:
       - "5044:5044"
     networks:

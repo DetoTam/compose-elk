@@ -11,7 +11,7 @@ services:
         ES_DATA: ${ES_DATA}
         ES_LOGS: ${ES_LOGS}
       dockerfile: Dockerfile
-    #image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
     container_name: elasticsearch
     environment:
       - discovery.type=single-node

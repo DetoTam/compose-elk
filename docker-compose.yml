@@ -7,7 +7,7 @@ services:
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g -Xlog:gc*,gc+age=trace,safepoint:stdout:utctime,level,pid,tags
       - xpack.security.enabled=false
     volumes:
       - ./elasticsearch/config:/etc/elasticsearch

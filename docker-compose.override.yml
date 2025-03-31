@@ -1,0 +1,57 @@
+version: '3.8'
+services:
+  elasticsearch:
+    env_file:
+      - .env
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    volumes:
+      - ./elasticsearch/config:${ES_CONFIG}
+      - ./elasticsearch/logs:${ES_LOGS}
+      - ./elasticsearch/data:${ES_DATA}
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - elk
+
+  kibana:
+    env_file:
+      - .env
+    image: docker.elastic.co/kibana/kibana:${ELK_VERSION}
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./kibana/config:${KBN_CONFIG}
+      - ./kibana/logs:${KBN_LOGS}
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+
+  logstash:
+    env_file:
+      - .env
+    image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
+    container_name: logstash
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./logstash/config:${LS_CONFIG}
+      - ./logstash/pipeline:${LS_PIPELINE}
+      - ./logs/logstash:${LS_LOGS}
+      - ./app-log/Data:${LS_DATA}
+      - ./app-log/patterns:${LS_PATTERNS}
+    ports:
+      - "5044:5044"
+    networks:
+      - elk
+
+networks:
+  elk:
+    driver: bridge

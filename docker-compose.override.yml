@@ -1,56 +1,27 @@
 version: '3.8'
 services:
   elasticsearch:
-    env_file:
-      - .env
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - xpack.security.enabled=false
     volumes:
-      - ./elasticsearch/config:${ES_CONFIG}
-      - ./elasticsearch/logs:${ES_LOGS}
-      - ./elasticsearch/data:${ES_DATA}
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    networks:
-      - elk
+      - ./elasticsearch/config:/etc/elasticsearch
+      - ./elasticsearch/logs:/usr/share/elasticsearch/logs
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+    environment:
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g  
 
   kibana:
-    env_file:
-      - .env
-    image: docker.elastic.co/kibana/kibana:${ELK_VERSION}
-    container_name: kibana
-    depends_on:
-      - elasticsearch
     volumes:
-      - ./kibana/config:${KBN_CONFIG}
-      - ./kibana/logs:${KBN_LOGS}
-    ports:
-      - "5601:5601"
-    networks:
-      - elk
+      - ./kibana/config:/usr/share/kibana/config
+      - ./kibana/logs:/var/log/kibana
 
   logstash:
-    env_file:
-      - .env
-    image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
-    container_name: logstash
-    depends_on:
-      - elasticsearch
     volumes:
-      - ./logstash/config:${LS_CONFIG}
-      - ./logstash/pipeline:${LS_PIPELINE}
-      - ./logs/logstash:${LS_LOGS}
-      - ./app-log/Data:${LS_DATA}
-      - ./app-log/patterns:${LS_PATTERNS}
-    ports:
-      - "5044:5044"
-    networks:
-      - elk
+      - ./logstash/config:/usr/share/logstash/config
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logs/logstash:/var/log/logstash
+      - ./app-log/Data:/usr/share/logstash/data
+      - ./app-log/patterns:/usr/share/logstash/patterns
+    environment:
+      - LS_JAVA_OPTS=-Xms512m -Xmx512m  
 
 networks:
   elk:

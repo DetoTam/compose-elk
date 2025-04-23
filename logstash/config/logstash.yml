@@ -1,7 +1,7 @@
-path.data: /var/lib/logstash
-pipeline.ordered: auto
+http.host: "0.0.0.0"
 
-log.level: trace
-path.logs: /usr/share/logstash/config/logs
-
-path.config: "/usr/share/logstash/pipeline/"
+xpack.monitoring.enabled: true
+xpack.monitoring.elasticsearch.hosts: [ "https://elasticsearch:9200" ]
+xpack.monitoring.elasticsearch.username: "elastic"
+xpack.monitoring.elasticsearch.password: "changeme"
+xpack.monitoring.elasticsearch.ssl.keystore.path: "/usr/share/logstash/config/certs/elastic-certificates.p12"

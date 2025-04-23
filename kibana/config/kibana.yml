@@ -1,16 +1,9 @@
 server.host: "0.0.0.0"
-elasticsearch.hosts: ["http://localhost:9200"]
+elasticsearch.hosts: ["https://elasticsearch:9200"]
 
-# elasticsearch.username: "kibana"
-# elasticsearch.password: "0wUv6x7PCetch"
+elasticsearch.username: "elastic"
+elasticsearch.password: "changeme"
 
-logging:
-  appenders:
-    file:
-      type: file
-      fileName: /usr/share/kibana/config/logs/kibana.log
-      layout:
-        type: json
-  root:
-    appenders:
-      - file
+elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/config/cert/elastic-certificates.p12"]
+
+elasticsearch.ssl.verificationMode: certificate

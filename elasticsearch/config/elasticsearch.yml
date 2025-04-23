@@ -1,8 +1,15 @@
 cluster.name: test-logs
 node.name: main
-path.data: /var/lib/elasticsearch
-path.logs: /usr/share/elasticsearch/config/logs
 network.host: 0.0.0.0
-http.port: 9200
-cluster.initial_master_nodes:
-  - main
+cluster.max_shards_per_node: 2000
+
+xpack.license.self_generated.type: basic
+
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: /etc/elasticsearch/cert/elastic-stack-ca.p12
+xpack.security.transport.ssl.truststore.path: /etc/elasticsearch/cert/elastic-certificates.p12
+
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: /etc/elasticsearch/cert/elastic-certificates.p12

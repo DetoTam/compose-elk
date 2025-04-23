@@ -7,12 +7,14 @@ services:
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
+      - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms2g -Xmx2g -Xlog:gc*,gc+age=trace,safepoint:stdout:utctime,level,pid,tags
       - xpack.security.enabled=false
     volumes:
       - ./elasticsearch/config:/etc/elasticsearch
       - ./elasticsearch/logs:/usr/share/elasticsearch/logs
       - ./elasticsearch/data:/usr/share/elasticsearch/data
+      - ./cert:/etc/elasticsearch/cert
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -29,6 +31,7 @@ services:
     volumes:
       - ./kibana/config:/usr/share/kibana/config
       - ./kibana/logs:/var/log/kibana
+      - ./cert:/usr/share/kibana/config/cert
     ports:
       - "5601:5601"
     networks:
@@ -47,6 +50,7 @@ services:
       - ./logstash/logs:/var/log/logstash
       - ./app-log/Data:/usr/share/logstash/data
       - ./app-log/patterns:/usr/share/logstash/patterns
+      - ./cert:/usr/share/logstash/config/certs
     ports:
       - "5044:5044"
     networks:
